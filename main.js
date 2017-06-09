@@ -41,7 +41,7 @@ function click(event){
     }
     //Press an operator and the stack is not empty
     if(isElementOf(event.target.id,["+","x","/"])){
-      if(stack.length){
+      if(stack[0] !== ""){
         calc = false;
         state = 1;
         stack.push(event.target.id);
@@ -52,12 +52,16 @@ function click(event){
     }
     //Press subtraction with an empty stack
     if(event.target.id === "-"){
+      console.log("Pressed -");
       if(stack[0] === "-"){
+        console.log("stack[0] = -");
         stack.pop();
+        stack.push("");
         updateStackDisplay();
       }
       else{
-        state = stack.length ? 1 : 0
+        state = stack[0]==="" ? 0 : 1
+        stack.pop();
         stack.push("-");
         updateStackDisplay();
       }
