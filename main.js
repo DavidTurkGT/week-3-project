@@ -23,7 +23,13 @@ function addEventListeners(elements){
   }
 }
 
+
+//This is a legacy function from my first attempt and I never changed it...oops
 function click(event){
+
+  //////////////////////////////////
+  //  State 0 //////////////////////
+  //////////////////////////////////
   if(state === 0){
     //Press the clear button
     if(event.target.id === "C"){
@@ -35,12 +41,25 @@ function click(event){
     if(isIn(event.target.id, ["/","x","+","-","="])){
       //Pressing an operation with something on the stack pushes the operation on the stack and moves to state 1
       if (stack.length) {
+        //Special case: the stack is just ["-"], do nothing
+        if(stack[stack.length -1] === "-"){
+          if(event.target.id === "-"){
+            stack.pop()
+            updateDisplay();
+          }
+          return event;
+        }
         stack.push(event.target.id);
         updateDisplay();
         state = 1;
         return event;
       }
       else{
+        //Empty Stack
+        if(event.target.id === "-"){
+          stack.push(event.target.id);
+          updateDisplay();
+        }
         return event;
       }
     }
