@@ -25,15 +25,15 @@ function addEventListeners(elements){
 
 function click(event){
   if(state === 0){
-    console.log("You are in state 0!");
     //Press the clear button
     if(event.target.id === "C"){
-      console.log("You pressed clear.  Doing someting later.");
+      stack = [];
+      updateDisplay();
       return event;
     }
     //Check to see if an operation button is pressed with no first number or holdover number
     if(isIn(event.target.id, ["/","x","+","-","="])){
-      //Pressing an operation with something on the stack moves to state 1
+      //Pressing an operation with something on the stack pushes the operation on the stack and moves to state 1
       if (stack.length) {
         stack.push(event.target.id);
         updateDisplay();
@@ -41,12 +41,12 @@ function click(event){
         return event;
       }
       else{
-        console.log("Do Nothing");
         return event;
       }
     }
     else {
-      console.log("Adding " + event.target.id + " to number and upadating display");
+      //Updates the stack
+      //If a number is already there then it pops and concats the next digit and pushes onto the stack
       if(stack.length){
         stack.push(stack.pop() + event.target.id);
       }
