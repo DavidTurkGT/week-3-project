@@ -29,6 +29,7 @@ function click(event){
 
   //////////////////////////////////
   //  State 0 //////////////////////
+  // Enter Initial number //////////
   //////////////////////////////////
   if(state === 0){
     //Press the clear button
@@ -76,19 +77,49 @@ function click(event){
       return event;
     }
   }
+  //////////////////////////////////
+  //  State 1 //////////////////////
+  // Define operation //////////////
+  //////////////////////////////////
   else if (state === 1){
-    console.log("You are in state 1!");
+    //Check to see if = is pressed for a special case
+    //If there are at least three things on the stack then we can perform a calculation (We have at least two inputs and an operation)
+    //If the stack is an odd length this is valid
+    //If the stack is even then we have an operation with no second input
+    if(event.target.id === "=" &&
+        stack.length >= 3 &&
+        stack.length % 2 === 1){
+        calculate();
+        return event;
+    }
+    //With the special case of = filtered out, we do nothing on a press of =
+    if(event.target.id === "="){
+      console.log("Do nothing!");
+      return event;
+    }
+    if(isIn(event.target.id, ["/","x","+","-"])){
+      //If a user presses an operator before a # then they can change the operation
+      stack.pop();
+      stack.push(event.target.id);
+      updateDisplay();
+      return event;
+    }
+    else{
+      console.log("Moving to State 2!");
+      return event;
+    }
   }
+  //////////////////////////////////
+  //  State 2 //////////////////////
+  // Set next number ///////////////
+  //////////////////////////////////
   else if (state === 2) {
     console.log("You are in state 2!");
-  }
-  else {
-    console.log("You are in state 3!");
   }
 
 }
 
-//Checks to see if a gievn item is in aa given array
+//Checks to see if a given item is in aa given array
 function isIn(item, array){
   var inside = false;
   array.forEach(function(e){if(item===e){inside=true;}});
@@ -98,6 +129,10 @@ function isIn(item, array){
 function updateDisplay(){
   display.textContent = "";
   stack.forEach(function(item){display.textContent+=item;});
+}
+
+function calculate(){
+  console.log("Ready to calculate!");
 }
 
 addEventListeners(squares);
