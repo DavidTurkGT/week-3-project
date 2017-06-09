@@ -1,0 +1,33 @@
+.container{
+  margin: auto;
+  height: 60vw;
+  width: 48vw;
+}
+
+.calculator{
+
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  flex: 1 20%;
+  border: 1px solid red;
+  display: flex;
+}
+
+.square{
+  background-color: #64B255;
+  border: 1px solid;
+  height: 10vh;
+  width: auto;
+  flex:1 25%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#output{
+  flex: 3 75%;
+}
