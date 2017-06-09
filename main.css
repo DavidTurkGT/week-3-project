@@ -1,3 +1,7 @@
+*{
+  box-sizing: border-box;
+}
+
 .container{
   margin: auto;
   height: 40vw;
@@ -13,19 +17,34 @@
 
 .row {
   flex: 1 20%;
-  border: 1px solid red;
+  /*border: 1px solid red;*/
   display: flex;
 }
 
 .square{
   background-color: #64B255;
-  border: 1px solid;
+  border: 1px solid #91CA86;
   height: 10vh;
   width: auto;
   flex:1 25%;
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: sans-serif;
+  color: white;
+  font-weight: 100;
+}
+
+.operator{
+  background-color: #82C276;
+}
+
+.hover_change:hover{
+  background-color: #82C276;
+}
+
+.clicked{
+  background-color: red;
 }
 
 #output{
