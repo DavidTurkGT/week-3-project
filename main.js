@@ -26,10 +26,35 @@ function addEventListeners(elements){
 function click(event){
   if(state === 0){
     console.log("You are in state 0!");
+    //Press the clear button
+    if(event.target.id === "C"){
+      console.log("You pressed clear.  Doing someting later.");
+      return event;
+    }
     //Check to see if an operation button is pressed with no first number or holdover number
-    if(isIn(event.target.id, ["/","x","+","-"]) &&
-        stack === []){
-      console.log("You pressed an operation with an empty stack");
+    if(isIn(event.target.id, ["/","x","+","-","="])){
+      //Pressing an operation with something on the stack moves to state 1
+      if (stack.length) {
+        stack.push(event.target.id);
+        updateDisplay();
+        state = 1;
+        return event;
+      }
+      else{
+        console.log("Do Nothing");
+        return event;
+      }
+    }
+    else {
+      console.log("Adding " + event.target.id + " to number and upadating display");
+      if(stack.length){
+        stack.push(stack.pop() + event.target.id);
+      }
+      else {
+        stack.push(event.target.id);
+      }
+      updateDisplay();
+      return event;
     }
   }
   else if (state === 1){
@@ -49,6 +74,11 @@ function isIn(item, array){
   var inside = false;
   array.forEach(function(e){if(item===e){inside=true;}});
   return inside;
+}
+
+function updateDisplay(){
+  display.textContent = "";
+  stack.forEach(function(item){display.textContent+=item;});
 }
 
 addEventListeners(squares);
