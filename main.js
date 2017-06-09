@@ -193,10 +193,18 @@ function calculate(){ // calculate
   else{
     var ans = subCalc(stack);
     stack = [""];
-    stack.push(ans);
+    stack.push(stack.pop() +ans);
     updateStackDisplay();
   }
   updateStackDisplay();
+  console.log(stack);
+  //Quick check for a bad expression
+  for(let i = 0; i < stack.length; i++){
+    if(stack[i] === "NaN"){
+      stack = [""];
+      display.textContent = "Bad Expression";
+    }
+  }
 }
 
 function subCalc(array){ //
