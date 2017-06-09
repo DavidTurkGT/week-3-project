@@ -1,6 +1,7 @@
 //Create event listeners, attach, verify
 var squares = document.querySelectorAll(".square");
 var display = document.querySelector("#output");
+var calc = false;
 
 var stack = [];
 var number = "";
@@ -34,50 +35,45 @@ function click(event){
   // Enter Initial number //////////
   //////////////////////////////////
   if(state === 0){
-    // //Press the clear button
-    // if(event.target.id === "C"){
-    //   stack = [];
-    //   updateDisplay();
-    //   return event;
-    // }
-    //Check to see if an operation button is pressed with no first number or holdover number
-    if(isIn(event.target.id, ["/","x","+","-","="])){
-      //Pressing an operation with something on the stack pushes the operation on the stack and moves to state 1
-      if (stack.length) {
-        //Special case: the stack is just ["-"], do nothing
-        if(stack[stack.length -1] === "-"){
-          if(event.target.id === "-"){
-            stack.pop()
-            updateDisplay();
-          }
-          return event;
-        }
-        stack.push(event.target.id);
-        updateDisplay();
-        state = 1;
-        return event;
-      }
-      else{
-        //Empty Stack
-        if(event.target.id === "-"){
-          stack.push(event.target.id);
-          updateDisplay();
-        }
-        return event;
-      }
-    }
-    else {
-      //Updates the stack
-      //If a number is already there then it pops and concats the next digit and pushes onto the stack
-      if(stack.length){
-        stack.push(stack.pop() + event.target.id);
-      }
-      else {
-        stack.push(event.target.id);
-      }
-      updateDisplay();
+    //Press equal do nothing
+    if(event.target.id === "="){
       return event;
     }
+    //Press an operator and the stack is not empty
+    if(isIn(event.target.id,["+","x","/"])){
+      console.log("Operator other than sub");
+      if(stack.length){
+        console.log("You pressed a button and there is a number displayed");
+        console.log("Moving to State 1");
+        calc = false;
+        state = 2;
+        stack.push(event.target.id);
+        updateDisplay();
+        return event;
+      }
+      return event;
+    }
+    //Press subtraction with an empty stack
+    if(event.target.id === "-"){
+      console.log("Sub!");
+      if(stack[0] === "-"){
+        console.log("foo");
+        stack.pop();
+        updateDisplay();
+      }
+      else{
+        console.log("bar");
+        state = stack.length ? 1 : 0
+        stack.push("-");
+        updateDisplay();
+      }
+      return event;
+    }
+    //Press a number
+    if(calc){ stack = []; }
+    stack.push(event.target.id);
+    updateDisplay();
+    return event;
   }
   //////////////////////////////////
   //  State 1 //////////////////////
@@ -129,6 +125,7 @@ function click(event){
       }
       else {
         calculate();
+        state = 0;
         return event;
       }
     }
@@ -149,13 +146,13 @@ function click(event){
 }
 
 //Checks to see if a given item is in aa given array
-function isIn(item, array){
+function isIn(item, array){ // is
   var inside = false;
   array.forEach(function(e){if(item===e){inside=true;}});
   return inside;
 }
 
-function updateDisplay(){
+function updateDisplay(){ // updateStackDisplay
   display.textContent = "";
   stack.forEach(function(item){display.textContent+=item;});
 }
@@ -166,38 +163,98 @@ function clear(){
   updateDisplay();
 }
 
-function calculate(){
-  console.log("Ready to calculate!");
-  console.log("NOTE: at this time calculate will only work with three items");
-  var num1 = parseFloat(stack[0]);
-  var num2 = parseFloat(stack[2]);
-  var ans;
-  if(stack[1] === "+"){
-    ans = num1 + num2;
+function calculate(){ // calculate
+  calc = true;
+  console.log("Stack when calulate() was called: ",stack);
+  console.log("---------------");
+  if(stack.length > 3){
+    while(stack.length > 3){
+    //Find all cases of multiplication or division
+    console.log("Looking for multiplication or division");
+    console.log("---------------");
+    for(var i = 0; i < stack.length; i++){
+      if(stack[i+1] === "/"){
+        console.log("Division found.  Dividing...");
+        var calcArray = stack.splice(i,3);
+        console.log("The calcArray is: ",calcArray);
+        console.log("The stack is: ",stack);
+        var ans = "" +subCalc(calcArray);
+        console.log("The answer is: ",ans);
+        console.log("---------------");
+        console.log("Inserting the answer back in the stack...");
+        stack.splice(i,0,ans);
+        console.log("The stack is: ",stack);
+        console.log("---------------");
+      }
+      if(stack[i+1] === "x"){
+        console.log("multiplication found. Multiplying...");
+        var calcArray = stack.splice(i,3);
+        console.log("The calcArray is: ",calcArray);
+        console.log("The stack is: ",stack);
+        var ans = "" +subCalc(calcArray);
+        console.log("The answer is: ",ans);
+        console.log("---------------");
+        console.log("Inserting the answer back in the stack...");
+        stack.splice(i,0,ans);
+        console.log("The stack is: ",stack);
+        console.log("---------------");
+      }
+    }
+    //Find all cases of Addition or subtraction
+    for(var i =0; i < stack.length; i++){
+      if(stack[i+1] === "+"){
+        console.log("Addition found. Adding...");
+        var calcArray = stack.splice(i,3);
+        console.log("The calcArray is: ",calcArray);
+        console.log("The stack is: ",stack);
+        var ans = "" +subCalc(calcArray);
+        console.log("The answer is: ",ans);
+        console.log("---------------");
+        console.log("Inserting the answer back in the stack...");
+        stack.splice(i,0,ans);
+        console.log("The stack is: ",stack);
+        console.log("---------------");
+      }
+      if(stack[i+1] === "-"){
+        console.log("Subtraction found.  Subtracting...");
+        var calcArray = stack.splice(i,3);
+        console.log("The calcArray is: ",calcArray);
+        console.log("The stack is: ",stack);
+        var ans = "" +subCalc(calcArray);
+        console.log("The answer is: ",ans);
+        console.log("---------------");
+        console.log("Inserting the answer back in the stack...");
+        stack.splice(i,0,ans);
+        console.log("The stack is: ",stack);
+        console.log("---------------");
+      }
+    }
+  }
+  }
+  else{
+    var ans = subCalc(stack);
     stack = [];
     stack.push(ans);
     updateDisplay();
   }
-  else if (stack[1] === "-") {
-    ans = num1 - num2;
-    stack = [];
-    stack.push(ans);
-    updateDisplay();
+  console.log("Outside the while loop");
+  updateDisplay();
+}
+
+function subCalc(array){ //
+  let num1 = parseFloat(array[0]);
+  let num2 = parseFloat(array[2]);
+  if(array[1] === "+"){
+    return num1+num2;
   }
-  else if (stack[1] === "x") {
-    ans = num1*num2;
-    stack = [];
-    stack.push(ans);
-    updateDisplay();
+  if (array[1] === "-") {
+    return num1-num2;
   }
-  else if (stack[1] === "/") {
-    ans = num1/num2;
-    stack = [];
-    stack.push(ans);
-    updateDisplay();
+  if (array[1] === "x") {
+    return num1*num2;
   }
-  else {
-    console.log("Wat!");
+  if (array[1] === "/") {
+    return num1/num2;
   }
 }
 
