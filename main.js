@@ -18,6 +18,8 @@ var state = 0;
 function addEventListeners(elements){
   for (var i = 0; i < squares.length; i++) {
     squares[i].addEventListener("click",function(){
+
+      if(event.target.id === "C"){ clear(); return event;}
       click(event);
     });
   }
@@ -32,12 +34,12 @@ function click(event){
   // Enter Initial number //////////
   //////////////////////////////////
   if(state === 0){
-    //Press the clear button
-    if(event.target.id === "C"){
-      stack = [];
-      updateDisplay();
-      return event;
-    }
+    // //Press the clear button
+    // if(event.target.id === "C"){
+    //   stack = [];
+    //   updateDisplay();
+    //   return event;
+    // }
     //Check to see if an operation button is pressed with no first number or holdover number
     if(isIn(event.target.id, ["/","x","+","-","="])){
       //Pressing an operation with something on the stack pushes the operation on the stack and moves to state 1
@@ -105,7 +107,11 @@ function click(event){
       return event;
     }
     else{
-      console.log("Moving to State 2!");
+      //The user has pressed a number
+      //Push the number on the stack and update the display, then move to state 2
+      stack.push(event.target.id);
+      updateDisplay();
+      state = 2;
       return event;
     }
   }
@@ -114,7 +120,30 @@ function click(event){
   // Set next number ///////////////
   //////////////////////////////////
   else if (state === 2) {
-    console.log("You are in state 2!");
+    //If the user presses the clear button clear the stack and update the display
+    //If the user presses = and the last item on the stack is an operator then do nothing otherwise, calculate!
+    if(event.target.id === "="){
+      if(isIn(stack[stack.length-1],["+","-","x","/"])){
+        console.log("Do nothing!");
+        return event;
+      }
+      else {
+        calculate();
+        return event;
+      }
+    }
+    //If the user presses an operator, push the operator onto the stack, update the display and move to state 1
+    if(isIn(event.target.id, ["/","x","+","-"])){
+      stack.push(event.target.id);
+      updateDisplay();
+      state = 1;
+      return event;
+    }
+    //If the user presses a number then pop the last number off the stack and concat with the input then push back on the stack.
+    //Update the display
+    stack.push(stack.pop() + event.target.id);
+    updateDisplay();
+    return event;
   }
 
 }
@@ -131,8 +160,45 @@ function updateDisplay(){
   stack.forEach(function(item){display.textContent+=item;});
 }
 
+function clear(){
+  stack = [];
+  state = 0;
+  updateDisplay();
+}
+
 function calculate(){
   console.log("Ready to calculate!");
+  console.log("NOTE: at this time calculate will only work with three items");
+  var num1 = parseFloat(stack[0]);
+  var num2 = parseFloat(stack[2]);
+  var ans;
+  if(stack[1] === "+"){
+    ans = num1 + num2;
+    stack = [];
+    stack.push(ans);
+    updateDisplay();
+  }
+  else if (stack[1] === "-") {
+    ans = num1 - num2;
+    stack = [];
+    stack.push(ans);
+    updateDisplay();
+  }
+  else if (stack[1] === "x") {
+    ans = num1*num2;
+    stack = [];
+    stack.push(ans);
+    updateDisplay();
+  }
+  else if (stack[1] === "/") {
+    ans = num1/num2;
+    stack = [];
+    stack.push(ans);
+    updateDisplay();
+  }
+  else {
+    console.log("Wat!");
+  }
 }
 
 addEventListeners(squares);
