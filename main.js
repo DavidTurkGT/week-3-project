@@ -25,6 +25,39 @@ function addEventListeners(elements){
       click(event.target.id);
     });
   }
+  document.addEventListener("keypress", function(){
+    // console.log("You pressed a key with code:",event.keyCode);
+    getIDfromKeypress(event.keyCode) ? click(getIDfromKeypress(event.keyCode)) : null;
+  })
+}
+
+function getIDfromKeypress(keyCode){
+  var lookUpTable = {
+    "49": "1",
+    "50": "2",
+    "51": "3",
+    "52": "4",
+    "53": "5",
+    "54": "6",
+    "55": "7",
+    "56": "8",
+    "57": "9",
+    "48": "0",
+    "43": "+",
+    "45": "-",
+    "120": "*",  //x key
+    "42": "*",   //* key
+    "47": "/",
+    "46": ".",
+    "61": "=",
+    "13": "=",   //Enter key
+    "99": "C",
+    "67": "C"    //Capital C key
+  };
+  if(keyCode === 99 || keyCode === 67){
+    clear();
+  }
+  return lookUpTable[""+keyCode];
 }
 
 
