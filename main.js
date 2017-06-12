@@ -100,16 +100,28 @@ function click(id){
       console.log("Only one operation");
       switch(stack[1]){
         case "+":
+        console.log("switched!");
+          console.log("Addition");
           ans = parseFloat(stack[0])+parseFloat(stack[2]);
+          stack = [""+ans];
           break;
         case "-":
+        console.log("switched!");
+          console.log("Subtraction");
           ans = parseFloat(stack[0])-parseFloat(stack[2]);
+          stack = [""+ans];
           break;
         case "*":
+        console.log("switched!");
+          console.log("multiplication");
           ans = parseFloat(stack[0])*parseFloat(stack[2]);
+          stack = [""+ans];
           break;
         case "/":
+        console.log("switched!");
+          console.log("Division");
           ans = parseFloat(stack[0])/parseFloat(stack[2]);
+          stack = [""+ans];
           break;
         }
       }
@@ -143,7 +155,7 @@ function click(id){
       state = 1;
       return id;
     }
-    if(isNumberPressed()){
+    if(isNumberPressed() || id === "."){
       if(calc){stack.pop(); calc = false;}
       stack.length ? stack.push(stack.pop()+id) : stack.push(""+id);
       updateStackDisplay();
@@ -172,7 +184,7 @@ function click(id){
   // Set next number ///////////////
   //////////////////////////////////
   else if (state === 2) {
-    if(isNumberPressed()){
+    if(isNumberPressed() || id === "."){
       stack.push(stack.pop() + id);
       updateStackDisplay();
       return id;
