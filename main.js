@@ -53,50 +53,50 @@ function click(id){
     var ans;
     calc = true;
     console.log("stack length",stack.length);
-    if(stack.length > 3){
-      while(stack.length > 3){
-        console.log("Running multiple calcs...");
-        console.log("check for mult and div");
-        for(let i = 0; i <stack.length; i++){
-          if(stack[i+1] === "/"){
-            console.log("found div");
-            console.log("current stack",stack);
-            let calcArray = stack.splice(i,3);
-            let ans = ""+(calcArray[0]/calcArray[2]);
-            stack.splice(i,0,ans)
-            console.log("new stack",stack);
-          }
-          if(stack[i+1] === "*"){
-            console.log("found mult");
-            console.log("current stack",stack);
-            let calcArray = stack.splice(i,3);
-            let ans = ""+(calcArray[0]*calcArray[2]);
-            stack.splice(i,0,ans)
-            console.log("new stack",stack);
-          }
+    while(stack.length > 3){
+
+      //Find all cases of multiplication and division
+      console.log("Looking for mult or division...");
+      for(let i = 0; i < stack.length; i++){
+        if(stack[i+1] === "/"){
+          console.log("found div...");
+          console.log("current stack",stack);
+          let calcArray = stack.splice(i,3);
+          let ans = "" + (parseFloat(calcArray[0])/parseFloat(calcArray[2]));
+          stack.splice(i,0,ans);
+          console.log("new stack",stack);
         }
-        console.log("check for add and sub...");
-        for(let i = 0; i <stack.length; i++){
-          if(stack[i+1] === "+"){
-            console.log("found add");
-            console.log("current stack",stack);
-            let calcArray = stack.splice(i,3);
-            let ans = ""+(calcArray[0]+calcArray[2]);
-            stack.splice(i,0,ans)
-            console.log("new stack",stack);
-          }
-          if(stack[i+1] === "-"){
-            console.log("found sub");
-            console.log("current stack",stack);
-            let calcArray = stack.splice(i,3);
-            let ans = ""+(calcArray[0]-calcArray[2]);
-            stack.splice(i,0,ans)
-            console.log("new stack",stack);
-          }
+        if(stack[i+1] === "*"){
+          console.log("found mult...");
+          console.log("current stack",stack);
+          let calcArray = stack.splice(i,3);
+          let ans = "" + (parseFloat(calcArray[0])*parseFloat(calcArray[2]));
+          stack.splice(i,0,ans);
+          console.log("new stack",stack);
+        }
+      }
+
+      //Find all cases of addition and multiplication
+      for(let i = 0; i < stack.length; i++){
+        if(stack[i+1] === "+"){
+          console.log("found add...");
+          console.log("current stack",stack);
+          let calcArray = stack.splice(i,3);
+          let ans = "" + (parseFloat(calcArray[0])+parseFloat(calcArray[2]));
+          stack.splice(i,0,ans);
+          console.log("new stack",stack);
+        }
+        if(stack[i+1] === "-"){
+          console.log("found div...");
+          console.log("current stack",stack);
+          let calcArray = stack.splice(i,3);
+          let ans = "" + (parseFloat(calcArray[0])-parseFloat(calcArray[2]));
+          stack.splice(i,0,ans);
+          console.log("new stack",stack);
         }
       }
     }
-    else{
+    if(stack.length > 1){
       console.log("Only one operation");
       switch(stack[1]){
         case "+":
@@ -112,8 +112,7 @@ function click(id){
           ans = parseFloat(stack[0])/parseFloat(stack[2]);
           break;
         }
-    }
-    stack = [""+ans];
+      }
   }
   //////////////////////////////////
 
