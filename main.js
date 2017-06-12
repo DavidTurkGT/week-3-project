@@ -6,6 +6,7 @@ var calc = false;
 var stack = [];
 var number = "";
 var operator = "";
+var calc = false;
 /////////////////////////////////////////
 // State machine breakdown:
 // State 0: Inputting the first number
@@ -29,6 +30,94 @@ function addEventListeners(elements){
 
 //This is a legacy function from my first attempt and I never changed it...oops
 function click(id){
+  //////////////////////////////////
+  //Support Functions //////////////
+  //////////////////////////////////
+  function isOperatorPressed(){
+    return (id === "+" ||
+            id === "-" ||
+            id === "*" ||
+            id === "/");
+  }
+
+  function isEqualPressed(){
+    return id === "=";
+  }
+
+  function isNumberPressed(){
+    return parseInt(id) ? true : false;
+  }
+
+  //FIXME
+  function calculate(){
+    var ans;
+    calc = true;
+    console.log("stack length",stack.length);
+    if(stack.length > 3){
+      while(stack.length > 3){
+        console.log("Running multiple calcs...");
+        console.log("check for mult and div");
+        for(let i = 0; i <stack.length; i++){
+          if(stack[i+1] === "/"){
+            console.log("found div");
+            console.log("current stack",stack);
+            let calcArray = stack.splice(i,3);
+            let ans = ""+(calcArray[0]/calcArray[2]);
+            stack.splice(i,0,ans)
+            console.log("new stack",stack);
+          }
+          if(stack[i+1] === "*"){
+            console.log("found mult");
+            console.log("current stack",stack);
+            let calcArray = stack.splice(i,3);
+            let ans = ""+(calcArray[0]*calcArray[2]);
+            stack.splice(i,0,ans)
+            console.log("new stack",stack);
+          }
+        }
+        console.log("check for add and sub...");
+        for(let i = 0; i <stack.length; i++){
+          if(stack[i+1] === "+"){
+            console.log("found add");
+            console.log("current stack",stack);
+            let calcArray = stack.splice(i,3);
+            let ans = ""+(calcArray[0]+calcArray[2]);
+            stack.splice(i,0,ans)
+            console.log("new stack",stack);
+          }
+          if(stack[i+1] === "-"){
+            console.log("found sub");
+            console.log("current stack",stack);
+            let calcArray = stack.splice(i,3);
+            let ans = ""+(calcArray[0]-calcArray[2]);
+            stack.splice(i,0,ans)
+            console.log("new stack",stack);
+          }
+        }
+      }
+    }
+    else{
+      console.log("Only one operation");
+      switch(stack[1]){
+        case "+":
+          ans = parseFloat(stack[0])+parseFloat(stack[2]);
+          break;
+        case "-":
+          ans = parseFloat(stack[0])-parseFloat(stack[2]);
+          break;
+        case "*":
+          ans = parseFloat(stack[0])*parseFloat(stack[2]);
+          break;
+        case "/":
+          ans = parseFloat(stack[0])/parseFloat(stack[2]);
+          break;
+        }
+    }
+    stack = [""+ans];
+  }
+  //////////////////////////////////
+
+
 
   //////////////////////////////////
   //  State 0 //////////////////////
@@ -37,19 +126,28 @@ function click(id){
   if(state === 0){
     //Special case: check if subtraction is pressed to toggle +/- numbers
     if(id === "-"){
-      
+      if(!stack.length){
+        stack.push(id);
+        updateStackDisplay();
+        return id;
+      }
+      if(stack[stack.length-1]==="-"){
+        stack.pop();
+        updateStackDisplay();
+        return id;
+      }
+      //Wanting the actual subtraction operation is covered by the next conditional block
     }
-
-    if(isOperatorPressed(id) && stack.length === 0){
-      console.log("You pressed an operator",id);
+    if(isOperatorPressed() && stack.length){
+      stack.push(id);
+      updateStackDisplay();
+      state = 1;
       return id;
     }
-    if(isEqualPressed(id)){
-      console.log("You pressed the equal button", id);
-      return id;
-    }
-    if(isNumberPressed(id)){
-      console.log("You pressed a number",id);
+    if(isNumberPressed()){
+      if(calc){stack.pop(); calc = false;}
+      stack.length ? stack.push(stack.pop()+id) : stack.push(""+id);
+      updateStackDisplay();
     }
 
   }
@@ -58,30 +156,41 @@ function click(id){
   // Define operation //////////////
   //////////////////////////////////
   else if (state === 1){
-
+    if(isOperatorPressed()){
+      stack.pop();
+      stack.push(id);
+      updateStackDisplay();
+      return id;
+    }
+    if(isNumberPressed()){
+      stack.push(id);
+      updateStackDisplay();
+      state = 2;
+    }
   }
   //////////////////////////////////
   //  State 2 //////////////////////
   // Set next number ///////////////
   //////////////////////////////////
   else if (state === 2) {
+    if(isNumberPressed()){
+      stack.push(stack.pop() + id);
+      updateStackDisplay();
+      return id;
+    }
+    if(isOperatorPressed()){
+      stack.push(id);
+      updateStackDisplay();
+      state = 1;
+      return id;
+    }
+    if(isEqualPressed()){
+      calculate();
+      updateStackDisplay();
+      state = 0;
+      return id;
+    }
   }
-}
-
-//Checks to see if a given item is in aa given array
-function isOperatorPressed(id){
-  return (id === "+" ||
-          id === "-" ||
-          id === "*" ||
-          id === "/");
-}
-
-function isEqualPressed(id){
-  return id === "=";
-}
-
-function isNumberPressed(id){
-  return parseInt(id) ? true : false;
 }
 
 function clear(){
