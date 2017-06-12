@@ -26,7 +26,6 @@ function addEventListeners(elements){
     });
   }
   document.addEventListener("keypress", function(){
-    // console.log("You pressed a key with code:",event.keyCode);
     getIDfromKeypress(event.keyCode) ? click(getIDfromKeypress(event.keyCode)) : null;
   })
 }
@@ -78,81 +77,58 @@ function click(id){
   }
 
   function isNumberPressed(){
-    return parseInt(id) ? true : false;
+    return parseInt(id) || id === "0" ? true : false;
   }
 
   //FIXME
   function calculate(){
     var ans;
     calc = true;
-    console.log("stack length",stack.length);
     while(stack.length > 3){
 
       //Find all cases of multiplication and division
-      console.log("Looking for mult or division...");
       for(let i = 0; i < stack.length; i++){
         if(stack[i+1] === "/"){
-          console.log("found div...");
-          console.log("current stack",stack);
           let calcArray = stack.splice(i,3);
           let ans = "" + (parseFloat(calcArray[0])/parseFloat(calcArray[2]));
           stack.splice(i,0,ans);
-          console.log("new stack",stack);
         }
         if(stack[i+1] === "*"){
-          console.log("found mult...");
-          console.log("current stack",stack);
           let calcArray = stack.splice(i,3);
           let ans = "" + (parseFloat(calcArray[0])*parseFloat(calcArray[2]));
           stack.splice(i,0,ans);
-          console.log("new stack",stack);
         }
       }
 
       //Find all cases of addition and multiplication
       for(let i = 0; i < stack.length; i++){
         if(stack[i+1] === "+"){
-          console.log("found add...");
-          console.log("current stack",stack);
           let calcArray = stack.splice(i,3);
           let ans = "" + (parseFloat(calcArray[0])+parseFloat(calcArray[2]));
           stack.splice(i,0,ans);
-          console.log("new stack",stack);
         }
         if(stack[i+1] === "-"){
-          console.log("found div...");
-          console.log("current stack",stack);
           let calcArray = stack.splice(i,3);
           let ans = "" + (parseFloat(calcArray[0])-parseFloat(calcArray[2]));
           stack.splice(i,0,ans);
-          console.log("new stack",stack);
         }
       }
     }
     if(stack.length > 1){
-      console.log("Only one operation");
       switch(stack[1]){
         case "+":
-        console.log("switched!");
-          console.log("Addition");
           ans = parseFloat(stack[0])+parseFloat(stack[2]);
           stack = [""+ans];
           break;
         case "-":
-        console.log("switched!");
-          console.log("Subtraction");
           ans = parseFloat(stack[0])-parseFloat(stack[2]);
           stack = [""+ans];
           break;
         case "*":
-        console.log("switched!");
-          console.log("multiplication");
           ans = parseFloat(stack[0])*parseFloat(stack[2]);
           stack = [""+ans];
           break;
         case "/":
-        console.log("switched!");
-          console.log("Division");
           ans = parseFloat(stack[0])/parseFloat(stack[2]);
           stack = [""+ans];
           break;
