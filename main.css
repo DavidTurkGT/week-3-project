@@ -41,6 +41,7 @@
 
 .hover_change:hover{
   background-color: #82C276;
+  color: black;
 }
 
 .clicked{

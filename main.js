@@ -187,6 +187,13 @@ function click(id){
       updateStackDisplay();
       state = 2;
     }
+    if(isEqualPressed()){
+      stack.pop();
+      calculate();
+      updateStackDisplay();
+      state = 0;
+      return id;
+    }
   }
   //////////////////////////////////
   //  State 2 //////////////////////
